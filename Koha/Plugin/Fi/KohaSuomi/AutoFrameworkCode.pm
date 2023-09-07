@@ -65,6 +65,7 @@ sub configure {
         $self->output_html( $template->output() );
     }
     else {
+        my $error;
         my $fwcoderules;
         my $yaml = $cgi->param('framework_autoconvert_rules') || '';
         $yaml = "$yaml\n\n";
@@ -72,30 +73,33 @@ sub configure {
             $fwcoderules = YAML::Load($yaml);
         };
         if ($@) {
-            warn "Unable to parse framework_autoconvert_rules: $@";
-            # TODO: return to configure.tt and show the YAML has an error
-            return '';
-        }
-        if (ref($fwcoderules) ne 'ARRAY') {
-            warn "framework_autoconvert_rules YAML root element is not array";
-            # TODO: return to configure.tt and show the YAML has an error
-            return '';
-        }
-        foreach my $elem (@$fwcoderules) {
-            if (ref($elem) ne 'HASH') {
-                warn "framework_autoconvert_rules 2nd level YAML element not a hash";
-                # TODO: return to configure.tt and show the YAML has an error
-                #$cache->clear_from_cache($cache_key);
-                return '';
+            $error = "Unable to parse framework_autoconvert_rules: $@";
+        } elsif (ref($fwcoderules) ne 'ARRAY') {
+            $error = "framework_autoconvert_rules YAML root element is not array";
+        } else {
+            foreach my $elem (@$fwcoderules) {
+                if (ref($elem) ne 'HASH') {
+                    $error = "framework_autoconvert_rules 2nd level YAML element not a hash";
+                }
             }
         }
 
-        $self->store_data(
-            {
+        if (!defined($error)) {
+            $self->store_data(
+                {
+                    framework_autoconvert_rules => scalar $cgi->param('framework_autoconvert_rules'),
+                }
+                );
+            $self->go_home();
+        } else {
+            my $template = $self->get_template({ file => 'configure.tt' });
+            $template->param(
                 framework_autoconvert_rules => scalar $cgi->param('framework_autoconvert_rules'),
-            }
-        );
-        $self->go_home();
+                error => $error,
+                );
+
+            $self->output_html( $template->output() );
+        }
     }
 }
 
