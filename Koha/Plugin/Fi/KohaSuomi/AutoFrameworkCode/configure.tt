@@ -1,0 +1,56 @@
+[% USE KohaDates %]
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: Auto Framework Code: Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Auto Framework Code &rsaquo; Configuration</div>
+
+<div id="doc3">
+    <h3>Koha: Auto Framework Code Plugin: Configuration</h3>
+
+    <form method="get">
+        <!-- Always pass these two parameters so the plugin system knows what to execute! -->
+        <input type="hidden" name="class" value="[% CLASS %]"/>
+        <input type="hidden" name="method" value="[% METHOD %]"/>
+
+        <p>
+
+        <label for="framework_autoconvert_rules">Framework conversion rules: </label>
+        <textarea name="framework_autoconvert_rules" rows="10" cols="80">[% framework_autoconvert_rules %]</textarea>
+
+        <p>
+
+Example: <pre>
+- 000/06 + 000/07:
+   a+s: SER
+- 000/06 + 007/00-01:
+   a+cr: EKIR
+- 000/06:
+   a: KIR
+   c: NUO
+   e: MAP
+</pre>
+
+        <p>
+
+        <input type="hidden" name="save" value="1" />
+
+        <input type="submit" value="Save configuration" />
+    </form>
+
+    <hr/>
+
+    <p>
+        <h5>Upgrade status</h5>
+        [% IF last_upgraded %]
+            Plugin was last upgraded on this system on [% last_upgraded | $KohaDates with_hours => 1 %]
+        [% ELSE %]
+            Plugin has never been upgraded.
+        [% END %]
+    </p>
+
+[% INCLUDE 'intranet-bottom.inc' %]
