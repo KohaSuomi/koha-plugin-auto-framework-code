@@ -6,6 +6,7 @@ for a record.
 ## Example configuration
 
 ```
+---
 - 000/06 + 000/07:
    a+s: SER
 - 000/06:
@@ -16,4 +17,6 @@ for a record.
    j: CDA
    r: LAU
    t: KIR
+- 008/26 + 000/06:
+   g+m: KP
 ```
