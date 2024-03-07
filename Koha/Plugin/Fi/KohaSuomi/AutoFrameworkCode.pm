@@ -7,6 +7,7 @@ use MARC::Record;
 use XML::LibXML;
 use Storable;
 
+use C4::Context;
 use C4::Languages qw(getlanguage);
 use Koha::Caches;
 
@@ -14,10 +15,10 @@ our $metadata = {
     name            => 'Auto Framework Code',
     author          => 'Pasi Kallinen',
     date_authored   => '2023-09-07',
-    date_updated    => "2023-09-07",
+    date_updated    => "2024-03-07",
     minimum_version => '21.05.00.000',
     maximum_version => undef,
-    version         => '0.0.1',
+    version         => '0.0.2',
     description     => 'Automatically figure out what framework code should be used for a record',
 };
 
@@ -50,6 +51,54 @@ sub uninstall {
     return 1;
 }
 
+sub _get_valid_fwcodes {
+    my $sth = C4::Context->dbh->prepare("SELECT frameworkcode FROM biblio_framework");
+    $sth->execute();
+    my $res = $sth->fetchall_hashref('frameworkcode');
+    return $res;
+}
+
+sub _checkYaml {
+    my ( $cgi ) = @_;
+
+    my $error;
+    my $fwcoderules;
+    my $yaml = $cgi->param('framework_autoconvert_rules') || '';
+    $yaml = "$yaml\n\n";
+    eval {
+        $fwcoderules = YAML::Load($yaml);
+    };
+    if ($@) {
+        return "Unable to parse framework_autoconvert_rules: $@";
+    } elsif (ref($fwcoderules) ne 'ARRAY') {
+        return "framework_autoconvert_rules YAML root element is not array";
+    } else {
+        my @fwcodes = ();
+        my $valid_fwcodes = _get_valid_fwcodes();
+        foreach my $elem (@$fwcoderules) {
+            if (ref($elem) ne 'HASH') {
+                return "framework_autoconvert_rules 2nd level YAML element not a hash";
+            }
+            foreach my $tmp1 ($elem) {
+                my %hash1 = %{$tmp1};
+                foreach my $tmp2 (keys(%hash1)) {
+                    foreach my $tmp3 ($hash1{$tmp2}) {
+                        my %hash2 = %{$tmp3};
+                        foreach my $tmp4 (keys(%hash2)) {
+                            push @fwcodes, $hash2{$tmp4};
+                        }
+                    }
+                }
+            }
+        }
+        foreach my $code (@fwcodes) {
+            return "frameworkcode is empty." if ($code =~ /^\s*$/);
+            return "frameworkcode $code does not exist" if (!defined($valid_fwcodes->{$code}));
+        }
+    }
+    return undef;
+}
+
 sub configure {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
@@ -65,24 +114,7 @@ sub configure {
         $self->output_html( $template->output() );
     }
     else {
-        my $error;
-        my $fwcoderules;
-        my $yaml = $cgi->param('framework_autoconvert_rules') || '';
-        $yaml = "$yaml\n\n";
-        eval {
-            $fwcoderules = YAML::Load($yaml);
-        };
-        if ($@) {
-            $error = "Unable to parse framework_autoconvert_rules: $@";
-        } elsif (ref($fwcoderules) ne 'ARRAY') {
-            $error = "framework_autoconvert_rules YAML root element is not array";
-        } else {
-            foreach my $elem (@$fwcoderules) {
-                if (ref($elem) ne 'HASH') {
-                    $error = "framework_autoconvert_rules 2nd level YAML element not a hash";
-                }
-            }
-        }
+        my $error = _checkYaml($cgi);
 
         if (!defined($error)) {
             $self->store_data(
