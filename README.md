@@ -20,5 +20,29 @@ for a record.
 - 008/26 + 000/06:
    g+m: KP
 ```
+Example from Vaski-kirjastot:
+
+```
+- 000/06 + 000/07:
+   a+s: SER
+   j+a: MUO
+- 000/06 + 007/00-01:
+   a+cr: EKIR
+- 000/06 + 008/26:
+   m+g: KP
+   r+g: LAU
+- 000/06 + 008/22:
+   i+f: CELI
+- 000/06:
+   a: KIR
+   c: NUO
+   e: MAP
+   g: VR
+   i: AUD
+   j: SR
+   o: MONI
+   r: ESI
+   t: KIR
+```
 
 Please check that you have the same framework codes in your database and change them here accordingly. If you add here codes that have no correspondence in your frameworks will the biblios on and items using these codes look "empty" when editing.
