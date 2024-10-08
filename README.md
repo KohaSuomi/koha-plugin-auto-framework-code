@@ -45,4 +45,22 @@ Example from Vaski-kirjastot:
    t: KIR
 ```
 
+Example from OUTI-kirjastot
+```
+---
+- 000/06 + 000/07:
+   a+s: SER
+- 000/06:
+   a: KIR
+   c: NUO
+   e: MAP
+   g: VR
+   j: CDA
+   t: KIR
+- 008/26 + 000/06:
+   g+m: KP
+- 008/33 + 000/06:
+   g+r: LAU
+```
+
 Please check that you have the same framework codes in your database and change them here accordingly. If you add here codes that have no correspondence in your frameworks will the biblios on and items using these codes look "empty" when editing.
