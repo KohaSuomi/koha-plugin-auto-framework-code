@@ -1,7 +1,7 @@
 # Koha-Suomi plugin Auto Framework Code
 
 A Koha plugin to automatically figure out what framework code should be used
-for a record.
+for a record. Plugin looks at record's leader's (000) character positions. For example if there is 'a' in leader's character position 06 a framework code 'KIR' is selected.
 
 ## Example configuration
 
