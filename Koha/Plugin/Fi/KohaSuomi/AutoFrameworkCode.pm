@@ -19,7 +19,7 @@ our $metadata = {
     minimum_version => '21.05.00.000',
     maximum_version => undef,
     version         => '0.0.2',
-    description     => 'Automatically figure out what framework code should be used for a record',
+    description     => 'Automatically figure out what framework code should be used for a record. (Paikalliskannat)',
 };
 
 sub new {
