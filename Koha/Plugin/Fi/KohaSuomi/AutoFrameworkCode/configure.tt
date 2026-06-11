@@ -1,18 +1,23 @@
+[% TRY %]
+    [% PROCESS "$PLUGIN_DIR/i18n/${LANG}.inc" %]
+[% CATCH %]
+    [% PROCESS "$PLUGIN_DIR/i18n/default.inc" %]
+[% END %]
 [% USE KohaDates %]
 [% INCLUDE 'doc-head-open.inc' %]
- <title>Koha: Auto Framework Code: Configuration</title>
+ <title>[% T.page_title %]</title>
 [% INCLUDE 'doc-head-close.inc' %]
 </head>
 <body>
 [% INCLUDE 'header.inc' %]
 [% INCLUDE 'cat-search.inc' %]
 
-<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Auto Framework Code &rsaquo; Configuration</div>
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">[% T.breadcrumb_home %]</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">[% T.breadcrumb_plugins %]</a>[% T.breadcrumb_this_config %]</div>
 
 <div id="doc3">
-    <h3>Koha: Auto Framework Code Plugin: Configuration</h3>
+    <h3>[% T.page_header %]</h3>
 
-    [% IF error %]<div class="dialog alert"><strong>Error:</strong> [% error | html %]</div>[% END %]
+    [% IF error %]<div class="dialog alert"><strong>[% T.error %]</strong> [% error | html %]</div>[% END %]
 
     <form method="get">
         <!-- Always pass these two parameters so the plugin system knows what to execute! -->
@@ -21,12 +26,10 @@
 
         <p>
 
-        <label for="framework_autoconvert_rules">Framework conversion rules: </label>
+        <label for="framework_autoconvert_rules">[% T.label_rules %]</label>
         <textarea name="framework_autoconvert_rules" rows="10" cols="80">[% framework_autoconvert_rules %]</textarea>
 
-        <p>
-
-Example: <pre>
+        <p>[% T.example %]<pre>
 - 000/06 + 000/07:
    a+s: SER
 - 000/06 + 007/00-01:
@@ -41,17 +44,17 @@ Example: <pre>
 
         <input type="hidden" name="save" value="1" />
 
-        <input type="submit" value="Save configuration" />
+        <input type="submit" value="[% T.save %]" />
     </form>
 
     <hr/>
 
     <p>
-        <h5>Upgrade status</h5>
+        <h5>[% T.upgrade_header %]</h5>
         [% IF last_upgraded %]
-            Plugin was last upgraded on this system on [% last_upgraded | $KohaDates with_hours => 1 %]
+            [% T.last_updated %]: [% last_upgraded | $KohaDates with_hours => 1 %]
         [% ELSE %]
-            Plugin has never been upgraded.
+            [% T.upgrade_never %]
         [% END %]
     </p>
 
